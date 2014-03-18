@@ -1,0 +1,18 @@
+DIR=$(cd `dirname ${BASH_SOURCE}` > /dev/null && pwd)
+
+function install_lein {
+    sudo apt-get install --quiet --quiet --yes openjdk-7-jre-headless
+
+    if [ ! -f $LEIN_ROOT/lein ]
+    then
+        mkdir -p $LEIN_ROOT
+        wget --quiet --output-document $LEIN_ROOT/lein https://raw.github.com/technomancy/leiningen/stable/bin/lein
+        chmod 755 $LEIN_ROOT/lein
+    fi
+}
+
+LEIN_ROOT=$DIR/tools/lein
+
+install_lein
+
+export PATH=$LEIN_ROOT:$PATH
