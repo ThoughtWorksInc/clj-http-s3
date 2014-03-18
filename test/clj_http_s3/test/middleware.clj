@@ -1,7 +1,9 @@
 (ns clj-http-s3.test.middleware
   (:require [clojure.test :refer :all]
             [clj-http-s3.middleware :as middleware]
-            [clj-http.client :as client]))
+            [clj-http.client :as client]
+            [clj-time.core :as time]
+            [clj-time.local :as local-time]))
 
 (defn is-passed [middleware req]
   (let [client (middleware identity)]
@@ -26,3 +28,14 @@
 (deftest pass-on-no-aws-auth
   (is-passed middleware/wrap-aws-s3-auth
              {:uri "/foo"}))
+
+(deftest apply-on-date
+  (with-redefs [local-time/local-now (fn [] (time/date-time 2014 3 18 15 10 9))]
+    (is-applied middleware/wrap-request-date
+                {}
+                {:headers {"Date" "Tue, 18 Mar 2014 15:10:09 +0000"}})
+
+    (is-applied middleware/wrap-request-date
+                {:headers {"foo" "bar"}}
+                {:headers {"foo" "bar"
+                           "Date" "Tue, 18 Mar 2014 15:10:09 +0000"}})))
