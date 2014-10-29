@@ -15,12 +15,17 @@
 
 (deftest apply-on-aws-auth
   (with-redefs [clj-http-s3.s3/signature (fn [& args] (clojure.string/join "-" args))]
-    (is-applied middleware/wrap-aws-s3-auth
+    (is-applied (comp client/wrap-url middleware/wrap-aws-s3-auth)
                 {:url "http://http.example/an-s3-object"
                  :headers {"Date" "today"}
                  :aws-credentials {:access-key "AWS_ACCESS_KEY"
                                    :secret-key "AWS_SECRET_KEY"}}
-                {:url "http://http.example/an-s3-object"
+                {:query-string nil
+                 :user-info nil
+                 :uri "/an-s3-object"
+                 :server-port nil
+                 :server-name "http.example"
+                 :scheme :http
                  :headers {"authorization"
                            (str "AWS " "AWS_ACCESS_KEY" ":" "AWS_SECRET_KEY-GET-/an-s3-object-{\"Date\" \"today\"}")
                            "Date" "today"}})))

@@ -22,6 +22,6 @@
                              "GET"
                              (:access-key aws-credentials)
                              (:secret-key aws-credentials)
-                             (.getPath (java.net.URL. (req :url)))
+                             (req :uri)
                              (req :headers)))))
       (client req))))
