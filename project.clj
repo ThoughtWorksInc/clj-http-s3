@@ -1,4 +1,4 @@
-(defproject clj-http-s3 "0.1.0-SNAPSHOT"
+(defproject clj-http-s3 "0.2.0-SNAPSHOT"
   :description "Middleware to allow cli-http to authenticate with s3"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
