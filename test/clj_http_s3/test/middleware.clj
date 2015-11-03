@@ -63,3 +63,13 @@
                 {:headers {"foo" "bar"}}
                 {:headers {"foo" "bar"
                            "Date" "Tue, 18 Mar 2014 15:10:09 +0000"}})))
+
+(deftest apply-on-credentials
+  (with-redefs [middleware/provider (reify com.amazonaws.auth.AWSCredentialsProvider
+                                      (getCredentials [this]
+                                        (com.amazonaws.auth.BasicAWSCredentials.
+                                         "AWS_ACCESS_KEY" "AWS_SECRET_KEY")))]
+    (is-applied middleware/wrap-aws-credentials
+                {}
+                {:aws-credentials {:access-key "AWS_ACCESS_KEY"
+                                   :secret-key "AWS_SECRET_KEY"}})))

@@ -1,7 +1,10 @@
 (ns clj-http-s3.middleware
   (:require [clj-http-s3.s3 :as s3]
             [clj-time.format :as format-time]
-            [clj-time.local :as local-time]))
+            [clj-time.local :as local-time]
+            [clojure.set :as set])
+  (:import [com.amazonaws.auth
+            DefaultAWSCredentialsProviderChain]))
 
 (defn- request-date-time [] (format-time/unparse (format-time/formatters :rfc822) (local-time/local-now)))
 
@@ -38,3 +41,22 @@
                   assoc-authorization-header
                   (dissoc :aws-credentials)))
       (client req))))
+
+(defn- provider->credentials [provider]
+  (-> (.getCredentials provider)
+      bean
+      (set/rename-keys
+       {:AWSAccessKeyId :access-key
+        :AWSSecretKey :secret-key
+        :sessionToken :session-token})
+      (dissoc :class)))
+
+(def provider (DefaultAWSCredentialsProviderChain.))
+
+(defn wrap-aws-credentials
+  "Middleware which provides :aws-credentials from the ProviderChain."
+  [client]
+  (fn [req]
+    (-> req
+        (assoc :aws-credentials (provider->credentials provider))
+        client)))
