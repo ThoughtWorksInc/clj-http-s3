@@ -11,17 +11,30 @@
   (fn [req]
     (client (assoc-in req [:headers "Date"] (request-date-time)))))
 
+(defn- assoc-security-token [req]
+  (if-let [session-token (:session-token (:aws-credentials req))]
+    (assoc-in req
+              [:headers "x-amz-security-token"]
+              session-token)
+    req))
+
+(defn- assoc-authorization-header [req]
+  (assoc-in req
+            [:headers "authorization"]
+            (s3/authorization-header-token
+             "GET"
+             (:access-key (:aws-credentials req))
+             (:secret-key (:aws-credentials req))
+             (req :uri)
+             (req :headers))))
+
 (defn wrap-aws-s3-auth
   "Middleware converting the :aws-credentials option into an AWS Authorization header."
   [client]
   (fn [req]
     (if-let [aws-credentials (:aws-credentials req)]
-      (client (-> req (dissoc :aws-credentials)
-                  (assoc-in [:headers "authorization"]
-                            (s3/authorization-header-token
-                             "GET"
-                             (:access-key aws-credentials)
-                             (:secret-key aws-credentials)
-                             (req :uri)
-                             (req :headers)))))
+      (client (-> req
+                  assoc-security-token
+                  assoc-authorization-header
+                  (dissoc :aws-credentials)))
       (client req))))

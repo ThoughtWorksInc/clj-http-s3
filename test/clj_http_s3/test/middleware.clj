@@ -28,7 +28,26 @@
                  :scheme :http
                  :headers {"authorization"
                            (str "AWS " "AWS_ACCESS_KEY" ":" "AWS_SECRET_KEY-GET-/an-s3-object-{\"Date\" \"today\"}")
-                           "Date" "today"}})))
+                           "Date" "today"}})
+
+    (testing "applies security-token header when credentials include a session token"
+      (is-applied (comp client/wrap-url middleware/wrap-aws-s3-auth)
+                  {:url "http://http.example/an-s3-object"
+                   :headers {"Date" "today"}
+                   :aws-credentials {:access-key "AWS_ACCESS_KEY"
+                                     :secret-key "AWS_SECRET_KEY"
+                                     :session-token "AWS_SESSION_TOKEN"}}
+                  {:query-string nil
+                   :user-info nil
+                   :uri "/an-s3-object"
+                   :server-port nil
+                   :server-name "http.example"
+                   :scheme :http
+                   :headers {"authorization"
+                             (str "AWS " "AWS_ACCESS_KEY" ":"
+                                  "AWS_SECRET_KEY-GET-/an-s3-object-{\"x-amz-security-token\" \"AWS_SESSION_TOKEN\", \"Date\" \"today\"}")
+                             "Date" "today"
+                             "x-amz-security-token" "AWS_SESSION_TOKEN"}}))))
 
 (deftest pass-on-no-aws-auth
   (is-passed middleware/wrap-aws-s3-auth
