@@ -1,6 +1,6 @@
-(defproject clj-http-s3 "0.3.0-SNAPSHOT"
+(defproject clj-http-s3 "0.3.0"
   :description "Middleware to allow cli-http to authenticate with s3"
-  :url "http://example.com/FIXME"
+  :url "https://github.com/ThoughtWorksInc/clj-http-s3"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.5.1"]
