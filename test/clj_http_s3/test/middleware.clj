@@ -65,11 +65,18 @@
                            "Date" "Tue, 18 Mar 2014 15:10:09 +0000"}})))
 
 (deftest apply-on-credentials
-  (with-redefs [middleware/provider (reify com.amazonaws.auth.AWSCredentialsProvider
-                                      (getCredentials [this]
-                                        (com.amazonaws.auth.BasicAWSCredentials.
-                                         "AWS_ACCESS_KEY" "AWS_SECRET_KEY")))]
-    (is-applied middleware/wrap-aws-credentials
-                {}
-                {:aws-credentials {:access-key "AWS_ACCESS_KEY"
-                                   :secret-key "AWS_SECRET_KEY"}})))
+  (testing "uses credential provider"
+    (with-redefs [middleware/provider (reify com.amazonaws.auth.AWSCredentialsProvider
+                                        (getCredentials [this]
+                                          (com.amazonaws.auth.BasicAWSCredentials.
+                                           "AWS_ACCESS_KEY" "AWS_SECRET_KEY")))]
+      (is-applied middleware/wrap-aws-credentials
+                  {}
+                  {:aws-credentials {:access-key "AWS_ACCESS_KEY"
+                                     :secret-key "AWS_SECRET_KEY"}})))
+  (testing "prefers passed credentials"
+      (is-applied middleware/wrap-aws-credentials
+                  {:aws-credentials {:access-key "PASSED_ACCESS_KEY"
+                                     :secret-key "PASSED_SECRET_KEY"}}
+                  {:aws-credentials {:access-key "PASSED_ACCESS_KEY"
+                                     :secret-key "PASSED_SECRET_KEY"}})))

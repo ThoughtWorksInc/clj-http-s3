@@ -57,6 +57,8 @@
   "Middleware which provides :aws-credentials from the ProviderChain."
   [client]
   (fn [req]
-    (-> req
-        (assoc :aws-credentials (provider->credentials provider))
-        client)))
+    (if-not (:aws-credentials req)
+      (-> req
+          (assoc :aws-credentials (provider->credentials provider))
+          client)
+      (client req))))
