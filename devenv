@@ -1,7 +1,7 @@
 DIR=$(cd `dirname ${BASH_SOURCE}` > /dev/null && pwd)
 
 function install_lein {
-    sudo apt-get install --quiet --quiet --yes openjdk-7-jre-headless
+    sudo yum install --quiet --assumeyes java-1.7.0-openjdk > /dev/null
 
     if [ ! -f $LEIN_ROOT/lein ]
     then
