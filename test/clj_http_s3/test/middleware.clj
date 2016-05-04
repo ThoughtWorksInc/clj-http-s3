@@ -45,7 +45,7 @@
                    :scheme :http
                    :headers {"authorization"
                              (str "AWS " "AWS_ACCESS_KEY" ":"
-                                  "AWS_SECRET_KEY-GET-/an-s3-object-{\"x-amz-security-token\" \"AWS_SESSION_TOKEN\", \"Date\" \"today\"}")
+                                  "AWS_SECRET_KEY-GET-/an-s3-object-{\"Date\" \"today\", \"x-amz-security-token\" \"AWS_SESSION_TOKEN\"}")
                              "Date" "today"
                              "x-amz-security-token" "AWS_SESSION_TOKEN"}}))))
 
