@@ -23,6 +23,7 @@
                 {:query-string nil
                  :user-info nil
                  :uri "/an-s3-object"
+                 :url "http://http.example/an-s3-object"
                  :server-port nil
                  :server-name "http.example"
                  :scheme :http
@@ -40,6 +41,7 @@
                   {:query-string nil
                    :user-info nil
                    :uri "/an-s3-object"
+                   :url "http://http.example/an-s3-object"
                    :server-port nil
                    :server-name "http.example"
                    :scheme :http

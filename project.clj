@@ -4,8 +4,8 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [clj-http "3.0.1"]
-                 [clj-time "0.11.0"]
-                 [com.amazonaws/aws-java-sdk-core "1.10.75" :exclusions [joda-time commons-logging]]]
+                 [clj-http "3.9.1"]
+                 [clj-time "0.15.0"]
+                 [com.amazonaws/aws-java-sdk-core "1.11.480" :exclusions [joda-time commons-logging]]]
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})
